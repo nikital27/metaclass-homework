@@ -1,0 +1,43 @@
+.button {
+  border: none;
+  z-index: 20;
+  
+  display: flex;
+  align-items: center;
+  
+  color: var(--button-primary-text);
+  background-color: var(--button-primary-bg);
+  
+  font-size: 18px;
+  padding: 17px 32px;
+  flex-shrink: 0;
+  height: 52px;
+}
+
+.button:hover {
+  background-color: var(--button-primary-bg-hover);
+}
+
+.button:active {
+  background-color: var(--button-primary-bg-active);
+}
+
+.button:disabled {
+  background-color: var(--button-primary-bg-disabled);
+}
+
+.buttonLoading:disabled {
+  background-color: var(--button-primary-bg);
+}
+
+.buttonLoading:hover {
+  background-color: var(--button-primary-bg);
+}
+
+.buttonLoader {
+  margin-right: 8px;
+}
+
+.buttonLoader > svg path {
+  fill: var(--button-primary-text);
+}

@@ -1,0 +1,18 @@
+.productDetails{
+    display: flex;
+    flex-direction: column;
+    margin-top: 60px;
+    padding: 0 100px;
+
+    .toCatalog{
+        display: flex;
+        column-gap: 12px;
+        align-items: center;
+        width: 130px;
+        cursor: pointer;
+        transition: .2s;
+        &:hover{
+            column-gap: 6px;
+        }
+    }
+}

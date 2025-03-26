@@ -1,0 +1,44 @@
+.card {
+  max-width: 360px;
+  background-color: var(--card-image-bg);
+  max-height: 680px;
+  
+}
+
+.card:hover {
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
+}
+
+.cardImage {
+  display: block;
+  width: 360px;
+  height: 360px;
+}
+
+.cardContent {
+  background-color: white;
+  padding: 48px 12px 48px 12px;
+}
+
+.cardContentCaption {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 500;
+
+}
+
+.cardContentSubtitle {
+  margin-top: 8px;
+  height: 60px;
+}
+
+.cardFooter {
+  margin-top: 32px;
+
+  display: flex;
+  
+  align-items: center;
+  justify-content: space-between;
+  z-index: 20;
+}
