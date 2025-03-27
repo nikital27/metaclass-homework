@@ -11,17 +11,12 @@ import Text from 'components/Text';
 import Card from 'components/Card';
 
 import ArrowRightIcon from 'components/icons/ArrowRightIcon';
-import { Link } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 import { routes } from 'config/routes';
-
-import axios from 'axios';
-import qs from 'qs'
-
-//import { fetchProducts } from 'config/apiRequests';
 import Loader from 'components/Loader';
+import { fetchProducts } from 'config/apiRequests';
 
 const Catalog = () => {
-  //Интерфейс для состояния с товарами
   interface IProducts {
     id: number;
     documentId: string;
@@ -38,44 +33,33 @@ const Catalog = () => {
   const catalogRef = useRef<HTMLDivElement>(null);
 
   const [products, setProducts] = useState<IProducts[]>([]);
-  const [page, setPage] = useState<number>(1);
-  const [totalProducts, setTotalProducts] = useState<number>(0)
+  const [totalProducts, setTotalProducts] = useState<number>(0);
   const productsPerPage = 12;
+  const pageCount = Math.round(totalProducts / productsPerPage);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const initialPage = parseInt(searchParams.get('page') || '1', 10);
+  const [page, setPage] = useState<number>(initialPage);
 
   useEffect(() => {
-    const token =
-    'f53a84efed5478ffc79d455646b865298d6531cf8428a5e3157fa5572c6d3c51739cdaf3a28a4fdf8b83231163075ef6a8435a774867d035af53717fecd37bca814c6b7938f02d2893643e2c1b6a2f79b3ca715222895e8ee9374c0403d44081e135cda1f811fe7cfec6454746a5657ba070ec8456462f8ca0e881232335d1ef';
-  
-  const fetchProducts = async () => {
-    const query = qs.stringify({
-      populate: ['images', 'productCategory'],
-    });
-  
-    const response = await axios.get(`
-https://front-school-strapi.ktsdev.ru/api/products?populate[0]=images&populate[1]=productCategory&pagination[pageSize]=12&pagination[page]=${page}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }).then((res) => {setProducts(res.data.data);setTotalProducts(res.data.meta.pagination.total)})
-  };
 
-  fetchProducts();
-  }, [])
-
-  // useEffect(() => {
-  //   fetchProducts().then((data) => setProducts(data));
-  // }, []);
+    fetchProducts(page).then((res) => {setProducts(res.data); setTotalProducts(res.meta.pagination.total)})
+    setSearchParams({page: page.toString()});
+  }, [page, setSearchParams]);
 
   const handleChange = () => {};
 
-  const startIndex = (page - 1) * productsPerPage;
-  const endIndex = startIndex + productsPerPage;
-  const currentProducts = products.slice(startIndex, endIndex);
-
-  const totalPages = Math.ceil(products.length / productsPerPage);
+  const handlePageChange = (newPage: number) => {
+    catalogRef.current?.scrollIntoView({block:'start', behavior:'smooth'})
+    setTimeout(() => {
+      setPage(newPage);
+    }, 50);
+    
+  };
 
   return (
-    <div className={styles.catalog}>
+    <div className={styles.catalog} >
       <div className={styles.catalogHeader} ref={catalogRef}>
         <div className={styles.search}>
           <Input value="" placeholder="Search product" onChange={() => {}} />
@@ -98,12 +82,18 @@ https://front-school-strapi.ktsdev.ru/api/products?populate[0]=images&populate[1
           <Text view="subtitle" weight="bold">
             Total products
           </Text>
-          {totalProducts !== 0 ? <Text view='p-20' weight='bold' color='accent'>{totalProducts}</Text> : <Loader size='m' className={styles.loadingRotating}/>}
+          {totalProducts !== 0 ? (
+            <Text view="p-20" weight="bold" color="accent">
+              {totalProducts}
+            </Text>
+          ) : (
+            <Loader size="m" className={styles.loadingRotating} />
+          )}
         </div>
       </div>
       <div className={styles.catalogBody}>
-        {currentProducts &&
-          currentProducts.slice(0, 12).map((product) => (
+        {products &&
+          products.map((product) => (
             <Link to={routes.product.create(product.documentId)} key={product.documentId}>
               <Card
                 title={product.title}
@@ -117,7 +107,7 @@ https://front-school-strapi.ktsdev.ru/api/products?populate[0]=images&populate[1
           ))}
       </div>
       <div className={styles.pagination}>
-      <ArrowRightIcon
+        <ArrowRightIcon
           width={35}
           height={35}
           color={page === 1 ? 'secondary' : 'primary'}
@@ -126,31 +116,34 @@ https://front-school-strapi.ktsdev.ru/api/products?populate[0]=images&populate[1
             page === 1
               ? undefined
               : () => {
-                  setPage((prev) => prev - 1);
-                  setTimeout(() => {
-                    catalogRef.current?.scrollIntoView({
-                      block: 'start',
-                      behavior: 'smooth',
-                    });
-                  }, 0);
+                  handlePageChange(page - 1)
                 }
           }
         />
-        <ArrowRightIcon
+        {Array.from({ length: pageCount }).map((_, index) => {
+          const pageNumber = index + 1;
+          return (
+            <button
+              className={`${styles.pageSelector} ${page === pageNumber ? styles.active : ''}`}
+              onClick={() => {
+                handlePageChange(pageNumber)
+                
+              }}
+              key={pageNumber}
+            >
+              {pageNumber}
+            </button>
+          );
+        })}
+         <ArrowRightIcon
           width={35}
           height={35}
-          color={page === totalPages ? 'secondary' : 'primary'}
+          color={page === pageCount ? 'secondary' : 'primary'}
           onClick={
-            page === totalPages
+            page === pageCount
               ? undefined
               : () => {
-                  setPage((prev) => prev + 1);
-                  setTimeout(() => {
-                    catalogRef.current?.scrollIntoView({
-                      block: 'start',
-                      behavior: 'smooth',
-                    });
-                  }, 0);
+                handlePageChange(page + 1)
                 }
           }
         />
