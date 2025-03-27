@@ -6,6 +6,20 @@
     margin-top: 50px;
     margin-bottom: 113px;
 }
+
+@keyframes rotating{
+    from{
+        rotate: 0deg;
+    }
+    to{
+        rotate: 720deg;
+    }
+}
+.loadingRotating{
+    animation-name: rotating;
+    animation-duration: 1s;
+}
+
 .catalogHeader{
     display: flex;
     flex-direction: column;
