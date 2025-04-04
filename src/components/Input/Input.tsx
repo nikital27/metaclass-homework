@@ -1,8 +1,7 @@
 import cn from 'classnames';
-import React, { useEffect, useState } from 'react';
+import { forwardRef,useEffect, useState } from 'react';
 
-import styles from './Input.module.css';
-import '../variables.css';
+import styles from './Input.module.scss';
 
 export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> & {
   /** Значение поля */
@@ -13,7 +12,7 @@ export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onCh
   afterSlot?: React.ReactNode;
 };
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
+const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ value, onChange, afterSlot, className, ...props }, ref) => {
     const [inputValue, setInputValue] = useState(value);
 

@@ -21,6 +21,7 @@ module.exports = {
     'prettier',
     'plugin:import/errors',
     'plugin:import/warnings',
+    'plugin:import/recommended',
     'plugin:react/recommended',
     'plugin:import/typescript',
     'plugin:@typescript-eslint/recommended',
@@ -29,6 +30,12 @@ module.exports = {
   plugins: ['@typescript-eslint', 'import', 'prettier', 'react', 'react-hooks'],
   rules: {
     'no-console': 'warn',
+    'react/display-name': 'off',
+    'react/prop-types': 'off',
+    'import/no-useless-path-segments': ['error', {
+      noUselessIndex: true,
+    }],
+    'react/react-in-jsx-scope': 'off',
     'import/order': [
       'error',
       {

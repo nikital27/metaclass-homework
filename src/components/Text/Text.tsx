@@ -1,8 +1,7 @@
 import cn from 'classnames';
 import React from 'react';
 
-import styles from './Text.module.css';
-import '../variables.css';
+import styles from './Text.module.scss';
 
 export type TextProps = {
   /** Дополнительный класс */

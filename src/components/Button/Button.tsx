@@ -1,9 +1,8 @@
 import cn from 'classnames';
-import React from 'react';
+import { memo } from 'react';
 import Loader from '../Loader';
 
-import styles from './Button.module.css';
-import '../variables.css';
+import styles from './Button.module.scss';
 
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   /** Состояние загрузки */
@@ -16,7 +15,7 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   className?: string;
 };
 
-const Button: React.FC<ButtonProps> = React.memo(({ loading, children, className, disabled, ...props }) => (
+const Button: React.FC<ButtonProps> = memo(({ loading, children, className, disabled, ...props }) => (
   <button
     className={cn(className, styles.button, loading && !disabled && styles.buttonLoading)}
     disabled={disabled !== undefined ? disabled : loading}

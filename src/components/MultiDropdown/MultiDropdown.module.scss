@@ -3,32 +3,6 @@
   margin-top: 8px;
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 20;
 }
-
-.option {
-  padding: 14px 12px;
-}
-
-
-
-.checkbox {
-  display: none;
-}
-
-.checkbox:checked + p {
-  color: var(--text-accent);
-}
-
-.input path {
-  fill: var(--text-secondary);
-}
-
-
-.input input {
-  color: var(--text-primary);
-}
-.input input:focus {
-  color: var(--text-secondary);
-}
-
-

@@ -1,0 +1,53 @@
+.icon {
+  display: inline-block;
+  vertical-align: middle;
+  overflow: visible;
+
+  &--primary {
+    color: var(--text-primary);
+  }
+
+  &--secondary {
+    color: var(--text-secondary);
+  }
+
+  &--accent {
+    color: var(--text-accent);
+  }
+
+  &--stroke {
+    path,
+    circle,
+    rect,
+    line,
+    polyline,
+    polygon {
+      stroke: currentColor;
+      fill: none;
+    }
+  }
+
+  &--fill {
+    path,
+    circle,
+    rect,
+    line,
+    polyline,
+    polygon {
+      fill: currentColor;
+      stroke: none;
+    }
+  }
+
+  &--both {
+    path,
+    circle,
+    rect,
+    line,
+    polyline,
+    polygon {
+      fill: currentColor;
+      stroke: currentColor;
+    }
+  }
+}

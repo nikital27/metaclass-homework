@@ -1,8 +1,5 @@
 import cn from 'classnames';
-import React from 'react';
-
-import styles from './Loader.module.css';
-import '../variables.css'
+import styles from './Loader.module.scss';
 
 
 export type LoaderProps = {

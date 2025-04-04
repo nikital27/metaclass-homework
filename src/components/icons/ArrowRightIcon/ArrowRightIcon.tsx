@@ -1,11 +1,8 @@
-import cn from 'classnames';
-import React from 'react';
 import Icon, { IconProps } from '../Icon';
 
-import styles from '../Icon/Icon.module.css';
 
 const ArrowRightIcon: React.FC<IconProps> = ({ className, ...props }) => (
-  <Icon className={cn(styles.iconNoFill, className)} {...props}>
+  <Icon variant='stroke' className={className} {...props}>
     <path
       d="M12.9938 29.05L22.5021 19.5416C23.625 18.4187 23.625 16.5812 22.5021 15.4583L12.9938 5.94995"
       stroke="#151411"

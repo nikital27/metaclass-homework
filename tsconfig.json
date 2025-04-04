@@ -6,12 +6,11 @@
       "config": ["config/*"],
       "styles": ["styles/*"],
       "utils": ["utils/*"],
-      "assets": ["assets/*"]
+      "assets": ["assets/*"],
+      "types": ["types/*"],
+      "store": ["store/*"]
     }
   },
   "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
 }
