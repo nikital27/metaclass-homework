@@ -1,24 +1,18 @@
-import { useState } from 'react';
+import { observer } from 'mobx-react-lite';
+import { useEffect, useState } from 'react';
 import Button from 'components/Button';
 import Text from 'components/Text';
 import ArrowRightIcon from 'components/icons/ArrowRightIcon';
+import IProducts from 'types/IProducts';
 import styles from './productDetailCard.module.scss';
 
-type ProductProps = {
-  id: number;
-  documentId: string;
-  title: string;
-  images: [{ id: number; url: string }];
-  price: number;
-  productCategory: {
-    id: number;
-    title: string;
-  };
-  description: string;
-};
-
-const ProductDetailCard = ({ product }: { product: ProductProps }) => {
+const ProductDetailCard = observer(({ product }: { product: IProducts }) => {
   const [imageIndex, setImageIndex] = useState<number>(0);
+
+  useEffect(() => {
+    setImageIndex(0)
+  }, [product])
+
 
   return (
     <div className={styles.productDetailCard}>
@@ -64,6 +58,6 @@ const ProductDetailCard = ({ product }: { product: ProductProps }) => {
       </div>
     </div>
   );
-};
+});
 
 export default ProductDetailCard;

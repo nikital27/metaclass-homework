@@ -1,60 +1,32 @@
 
-import { RefObject, useEffect, useRef, useState } from 'react';
+import { observer } from 'mobx-react-lite';
 import { Link } from 'react-router';
 import Button from 'components/Button';
 import Card from 'components/Card';
 import Text from 'components/Text';
-import { fetchSimilarProducts } from 'config/api/products';
 import { routes } from 'config/routes';
+import productStore from 'store/ProductStore';
+import IProducts from 'types/IProducts';
 import styles from './relatedProducts.module.scss';
 
-type ProductProps = {
-  id: number;
-  documentId: string;
-  title: string;
-  images: [{ id: number; url: string }];
-  price: number;
-  productCategory: {
-    id: number;
-    title: string;
-  };
-  description: string;
-};
-
-const RelatedProducts = ({
+const RelatedProducts = observer(({
   product,
-  productDetailRef,
 }: {
-  product: ProductProps;
-  productDetailRef: RefObject<HTMLDivElement | null>;
+  product: IProducts;
 }) => {
-  const [relatedProducts, setRelatedProducts] = useState<ProductProps[]>([]);
 
-  const relatedProductsRef = useRef<HTMLDivElement>(null);
+  const related_products = productStore.products.filter(related_products => related_products.productCategory.id === product.productCategory.id && related_products !== product);
 
-  useEffect(() => {
-    fetchSimilarProducts(product).then((data: ProductProps[]) =>
-      setRelatedProducts(
-        data.filter(
-          (item) =>
-            item.productCategory.title === product.productCategory.title && item.documentId !== product.documentId,
-        ),
-      ),
-    );
-  }, [product]);
 
   return (
-    <div className={styles.relatedProducts} ref={relatedProductsRef}>
+    <div className={styles.relatedProducts}>
       <Text view="title">Related Items</Text>
       <div className={styles.relatedCards}>
-        {relatedProducts &&
-          relatedProducts.slice(0, 3).map((product: ProductProps) => (
+        {related_products &&
+          related_products.slice(0, 3).map((product: IProducts) => (
             <Link
               to={routes.product.create(product.documentId)}
               key={product.documentId}
-              onClick={() => {
-                productDetailRef.current?.scrollIntoView({ block: 'start', behavior: 'smooth' });
-              }}
             >
               <Card
                 title={product.title}
@@ -69,6 +41,6 @@ const RelatedProducts = ({
       </div>
     </div>
   );
-};
+});
 
 export default RelatedProducts;

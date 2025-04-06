@@ -7,16 +7,16 @@ type OptionItemProps = {
     value: string;
   };
   checked: boolean;
-  onChange: (option: { key: string; value: string }, checked: boolean) => void;
+  onChange: () => void;
 };
 
 const OptionItem: React.FC<OptionItemProps> = ({ option, checked, onChange }) => (
   <label className={styles.option}>
     <input
       className={styles.checkbox}
-      type="checkbox"
+      type="radio"
       checked={checked}
-      onChange={(e) => onChange(option, e.target.checked)}
+      onChange={onChange}
     />
     <Text view="p-16">{option.value}</Text>
   </label>

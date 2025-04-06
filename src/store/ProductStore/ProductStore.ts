@@ -1,5 +1,6 @@
+import { makeAutoObservable, reaction, runInAction } from 'mobx';
 import { fetchProducts } from 'config/api/products';
-import { makeAutoObservable, runInAction } from 'mobx';
+import rootStore from 'store/RootStore';
 import IProducts from 'types/IProducts';
 
 class ProductStore {
@@ -10,31 +11,38 @@ class ProductStore {
   };
   isLoading = false;
   error: string | null = null;
-  currentSearch = ''; // Добавляем поле для хранения текущего поискового запроса
 
   constructor() {
     makeAutoObservable(this);
+    this.setupSearch();
   }
 
-  async fetchProducts(page = 1, searchParams?: string) {
+  private setupSearch() {
+    reaction(
+      () => ({
+        search: rootStore.query.getParam('search') as string | undefined,
+        category: rootStore.query.getParam('category') as string | undefined
+      }),
+      ({ search, category }) => {
+        this.fetchProducts(1, search, category);
+      }
+    );
+  }
+
+  async fetchProducts(page = 1, searchParams?: string, categoryParams?: string) {
     this.isLoading = true;
     this.error = null;
 
-    // Если изменился поисковый запрос, сбрасываем страницу и товары
-    if (searchParams !== this.currentSearch) {
-      page = 1;
-      this.products = [];
-      this.currentSearch = searchParams || '';
-    }
-
     try {
-      const response = await fetchProducts(page, 10, searchParams);
+      const response = await fetchProducts(page, 10, searchParams, categoryParams);
+      const newProducts = response.data || [];
 
       runInAction(() => {
-        // Для поиска заменяем товары, для пагинации - добавляем
-        const newProducts = response.data || [];
-        this.products = page === 1 || searchParams ? newProducts : [...this.products, ...newProducts];
-
+        if (page === 1 || searchParams || categoryParams) {
+          this.products = newProducts;
+        } else {
+          this.products = [...this.products, ...newProducts];
+        }
         this.meta = {
           total: response.meta.pagination.total,
           page: page

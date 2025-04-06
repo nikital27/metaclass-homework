@@ -1,5 +1,6 @@
 import { useRoutes, Navigate } from 'react-router';
 import Layout from 'components/Layout';
+import { useQueryParamsStoreItin } from 'store/RootStore/hooks/useQueryParamsStoreInit';
 import { routes } from "./config/routes";
 import ProductDetails from './pages/ProductDetailsPage';
 import Products from './pages/ProductsPage';
@@ -7,6 +8,7 @@ import Products from './pages/ProductsPage';
 import 'styles/styles.scss'
 
 function App() {
+  useQueryParamsStoreItin();
   const element = useRoutes([
     {
       path: routes.main.mask,

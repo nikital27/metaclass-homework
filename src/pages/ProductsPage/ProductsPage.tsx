@@ -1,10 +1,10 @@
-import { observer } from 'mobx-react-lite';
+
 import Catalog from './Catalog';
 import Filter from './Filter';
 import ProductsCaption from './ProductsCaption';
 import Search from './Search';
 
-const ProductsPage = observer(() => {
+const ProductsPage = () => {
 
   return (
     <>
@@ -14,6 +14,6 @@ const ProductsPage = observer(() => {
       <Catalog />
     </>
   );
-});
+};
 
 export default ProductsPage;
