@@ -1,46 +1,23 @@
-import { observer } from 'mobx-react-lite';
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router';
 import Button from 'components/Button';
 import Input from 'components/Input';
-import productStore from 'store/ProductStore';
+import useSearch from 'utils/useSearch';
 import styles from './Search.module.scss';
+import { observer } from 'mobx-react-lite';
 
 const Search = observer(() => {
-    const [searchParams, setSearchParams] = useSearchParams();
-    const [searchValue, setSearchValue] = useState('');
-
-    // Восстановление поиска из URL при монтировании
-    useEffect(() => {
-        const query = searchParams.get('q');
-        if (query) {
-            setSearchValue(query);
-            productStore.fetchProducts(1, query);
-        }
-    }, []);
-
-    const handleSearch = () => {
-        if (searchValue.trim()) {
-            setSearchParams({ q: searchValue.trim() });
-            productStore.fetchProducts(1, searchValue.trim());
-        } else {
-            setSearchParams({});
-            productStore.fetchProducts(1);
-        }
-    };
-
-    const handleKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter') {
-            handleSearch();
-        }
-    };
+    const {
+        searchValue,
+        setSearchValue,
+        handleSearch,
+        handleKeyPress
+    } = useSearch();
 
     return (
         <div className={styles.search}>
             <Input
                 value={searchValue}
-                placeholder="Search product"
-                onChange={(e) => setSearchValue(e)}
+                placeholder="Найти продукт..."
+                onChange={setSearchValue}
                 onKeyPress={handleKeyPress}
             />
             <Button onClick={handleSearch}>Find now</Button>

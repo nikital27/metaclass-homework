@@ -1,62 +1,34 @@
-import { useState } from 'react';
-import Button from 'components/Button';
+import { observer } from 'mobx-react-lite';
 import Text from 'components/Text';
-import ArrowRightIcon from 'components/icons/ArrowRightIcon';
+import Button from 'components/Button';
+import ImageSlider from './ImageSlider';
 import styles from './productDetailCard.module.scss';
+import IProducts from 'types/IProducts';
 
-type ProductProps = {
-  id: number;
-  documentId: string;
-  title: string;
-  images: [{ id: number; url: string }];
-  price: number;
-  productCategory: {
-    id: number;
-    title: string;
-  };
-  description: string;
-};
+interface ProductDetailCardProps {
+  product: IProducts;
+}
 
-const ProductDetailCard = ({ product }: { product: ProductProps }) => {
-  const [imageIndex, setImageIndex] = useState<number>(0);
-
+const ProductDetailCard = observer(({ product }: ProductDetailCardProps) => {
   return (
     <div className={styles.productDetailCard}>
-      <div className={styles.imageSlider}>
-        <div
-          className={styles.sliderRight}
-          onClick={
-            imageIndex === 0
-              ? undefined
-              : () => {
-                setImageIndex((prev) => prev - 1);
-              }
-          }
-        >
-          <ArrowRightIcon width={35} height={35} viewBox='0 0 35 35' style={{ rotate: '180deg' }} />
-        </div>
-        <img src={`${product?.images[imageIndex].url}`} alt="" />
-        <div
-          className={styles.sliderLeft}
-          onClick={
-            imageIndex + 1 === product?.images.length
-              ? undefined
-              : () => {
-                setImageIndex((prev) => prev + 1);
-              }
-          }
-        >
-          <ArrowRightIcon width={35} height={35} viewBox='0 0 35 35' />
-        </div>
+      <div className={styles.imageContainer}>
+        <ImageSlider images={product.images} key={product.id} />
       </div>
+
       <div className={styles.productInfo}>
         <Text tag="h1" view="title">
-          {product?.title}
+          {product.title}
         </Text>
+
         <Text view="p-20" color="secondary">
-          {product?.description}
+          {product.description}
         </Text>
-        <Text view="title" tag="h2">{`$${product?.price}`}</Text>
+
+        <Text view="title" tag="h2">
+          ${product.price}
+        </Text>
+
         <div className={styles.actions}>
           <Button>Buy Now</Button>
           <Button>Add to Cart</Button>
@@ -64,6 +36,6 @@ const ProductDetailCard = ({ product }: { product: ProductProps }) => {
       </div>
     </div>
   );
-};
+});
 
 export default ProductDetailCard;

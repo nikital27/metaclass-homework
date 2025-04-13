@@ -13,7 +13,6 @@
 @mixin flex-wrapped {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   column-gap: 80px;
   row-gap: 50px;
 }

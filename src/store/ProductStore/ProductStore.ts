@@ -1,6 +1,8 @@
+import { makeAutoObservable, reaction, runInAction } from 'mobx';
 import { fetchProducts } from 'config/api/products';
-import { makeAutoObservable, runInAction } from 'mobx';
+import rootStore from 'store/RootStore';
 import IProducts from 'types/IProducts';
+import { Meta } from 'utils/meta';
 
 class ProductStore {
   products: IProducts[] = [];
@@ -8,44 +10,48 @@ class ProductStore {
     total: 0,
     page: 1
   };
-  isLoading = false;
-  error: string | null = null;
-  currentSearch = ''; // Добавляем поле для хранения текущего поискового запроса
+  state:Meta = Meta.initial
 
   constructor() {
     makeAutoObservable(this);
+    this.setupSearch();
   }
 
-  async fetchProducts(page = 1, searchParams?: string) {
-    this.isLoading = true;
-    this.error = null;
+  private setupSearch() {
+    reaction(
+      () => ({
+        search: rootStore.query.getParam('search') as string | undefined,
+        category: rootStore.query.getParam('category') as string | undefined
+      }),
+      ({ search, category }) => {
+        this.fetchProducts(1, search, category);
+      }
+    );
+  }
 
-    // Если изменился поисковый запрос, сбрасываем страницу и товары
-    if (searchParams !== this.currentSearch) {
-      page = 1;
-      this.products = [];
-      this.currentSearch = searchParams || '';
-    }
+  async fetchProducts(page = 1, searchParams?: string, categoryParams?: string) {
+    this.state = Meta.loading
 
     try {
-      const response = await fetchProducts(page, 10, searchParams);
+      const response = await fetchProducts(page, 10, searchParams, categoryParams);
+      const newProducts = response.data || [];
 
       runInAction(() => {
-        // Для поиска заменяем товары, для пагинации - добавляем
-        const newProducts = response.data || [];
-        this.products = page === 1 || searchParams ? newProducts : [...this.products, ...newProducts];
-
+        if (page === 1 || searchParams || categoryParams) {
+          this.products = newProducts;
+        } else {
+          this.products = [...this.products, ...newProducts];
+        }
         this.meta = {
           total: response.meta.pagination.total,
           page: page
         };
 
-        this.isLoading = false;
+        this.state = Meta.success
       });
     } catch (error) {
       runInAction(() => {
-        this.error = error instanceof Error ? error.message : 'Unknown error';
-        this.isLoading = false;
+        this.state = Meta.error;
       });
     }
   }

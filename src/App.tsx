@@ -5,8 +5,10 @@ import ProductDetails from './pages/ProductDetailsPage';
 import Products from './pages/ProductsPage';
 
 import 'styles/styles.scss'
+import { useQueryParamsStoreItin } from 'store/RootStore/hooks/useQueryParamsStoreInit';
 
 function App() {
+  useQueryParamsStoreItin();
   const element = useRoutes([
     {
       path: routes.main.mask,

@@ -1,48 +1,32 @@
-
 import { observer } from "mobx-react-lite";
-import { useEffect, useState } from "react";
-import MultiDropdown from "components/MultiDropdown";
-import { fetchCategories } from "config/api/products";
-import { Option } from "types/Options";
-import styles from './Filter.module.scss'
+import { useEffect } from "react";
+import Dropdown from "components/Dropdown";
+import useCategoryFilter from "utils/useCategoryFilter";
 
+import styles from './Filter.module.scss';
 
 const Filter = observer(() => {
-
-    const [options, setOptions] = useState<Option[]>([]);
-    const [selectedOptions, setSelectedOtions] = useState<Option[]>([])
+    const {
+        categoryOptions,
+        selectedCategory,
+        handleCategoryChange,
+        initializeCategory
+    } = useCategoryFilter();
 
     useEffect(() => {
-        fetchCategories().then(data => {
-            const formattedOptions = data.data.map(category => ({
-                key: category.id.toString(),
-                value: category.title
-            }))
-            setOptions(formattedOptions)
-        })
-    }, [])
-
-    const handleChange = (e) => {
-        setSelectedOtions(e)
-    }
-
+        initializeCategory();
+    }, []);
 
     return (
         <div className={styles.filter}>
-            <MultiDropdown
-                options={
-                    options
-                }
-                value={selectedOptions}
-                onChange={handleChange}
-                getTitle={() =>
-                    selectedOptions.length > 0
-                        ? selectedOptions.map(o => o.value).join(', ')
-                        : 'Filter'
-                }
+            <Dropdown
+                options={categoryOptions}
+                value={selectedCategory}
+                onChange={handleCategoryChange}
+                getTitle={(option) => option?.value || 'Выберите категорию'}
             />
         </div>
     );
-})
+});
 
 export default Filter;

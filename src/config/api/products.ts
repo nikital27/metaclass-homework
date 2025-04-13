@@ -15,7 +15,7 @@ export type ProductProps = {
 
 const defaultPopulate = ['images', 'productCategory'];
 
-export const fetchProducts = async (page = 1, pageSize = 10, searchParams?: string) => {
+export const fetchProducts = async (page = 1, pageSize = 10, searchParams?: string, categoryParams?: string) => {
   const response = await Api.get('/products', {
     params: {
       populate: defaultPopulate,
@@ -24,6 +24,11 @@ export const fetchProducts = async (page = 1, pageSize = 10, searchParams?: stri
       filters: {
         title: {
           $containsi: searchParams
+        },
+        productCategory: {
+          id: {
+            $eq: categoryParams
+          }
         }
       }
     }

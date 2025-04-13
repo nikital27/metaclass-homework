@@ -1,33 +1,35 @@
 import cn from 'classnames';
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import ArrowDownIcon from 'components/icons/ArrowDownIcon';
 import { useOnClickOutside } from 'utils/useOnClickOutside';
 import Input from '../Input';
 import OptionItem from './OptionItem';
 
-import styles from './MultiDropdown.module.scss';
+import styles from './Dropdown.module.scss'
 
 export type Option = {
   key: string;
   value: string;
 };
 
-export type MultiDropdownProps = {
+export type DropdownProps = {
   className?: string;
   options: Option[];
-  value: Option[];
-  onChange: (value: Option[]) => void;
+  value: Option | null;
+  onChange: (value: Option | null) => void;
   disabled?: boolean;
-  getTitle: (value: Option[]) => string;
+  getTitle?: (value: Option | null) => string;
+  clearable?: boolean;
 };
 
-const MultiDropdown: React.FC<MultiDropdownProps> = ({
+const Dropdown: React.FC<DropdownProps> = ({
   className,
   options,
   value,
   onChange,
   disabled,
-  getTitle,
+  getTitle = (val) => val?.value || '',
+  clearable = true,
   ...props
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,30 +38,43 @@ const MultiDropdown: React.FC<MultiDropdownProps> = ({
 
   useOnClickOutside(dropdownRef, () => setIsOpen(false));
 
-  const handleInputChange = (value: string) => setFilter(value);
-
-  const handleOptionChange = (option: Option, checked: boolean) => {
-    if (checked) {
-      onChange([...value, option]);
-    } else {
-      onChange(value.filter((v) => v !== option));
-    }
+  const handleInputChange = (value: string) => {
+    setFilter(value);
+    if (!isOpen) setIsOpen(true);
   };
 
-  const filteredOptions = options.filter((option) => 
+  const handleOptionClick = useCallback((option: Option) => {
+    onChange(option);
+    setIsOpen(false);
+    setFilter('');
+  }, [onChange]);
+
+  const handleClear = () => {
+    onChange(null);
+    setIsOpen(false);
+    setFilter('');
+  };
+
+  const filteredOptions = options.filter((option) =>
     option.value.toLowerCase().includes(filter.toLowerCase())
   );
+
+  const inputValue = isOpen ? filter : value ? getTitle(value) : '';
 
   return (
     <div ref={dropdownRef} className={cn(styles.dropdown, className)} {...props}>
       <Input
         type="text"
         onFocus={() => setIsOpen(true)}
-        value={isOpen ? filter : value.length ? getTitle(value) : ''}
-        placeholder={getTitle(value)}
+        value={inputValue}
+        placeholder={getTitle(null)}
         onChange={handleInputChange}
         className={styles.input}
-        afterSlot={<ArrowDownIcon />}
+        afterSlot={
+          <div className={styles.icons}>
+            <ArrowDownIcon />
+          </div>
+        }
         disabled={disabled}
       />
       {isOpen && !disabled && (
@@ -68,8 +83,8 @@ const MultiDropdown: React.FC<MultiDropdownProps> = ({
             <OptionItem
               key={option.key}
               option={option}
-              checked={value.includes(option)}
-              onChange={handleOptionChange}
+              checked={value?.key === option.key}
+              onChange={() => handleOptionClick(option)}
             />
           ))}
         </div>
@@ -78,4 +93,4 @@ const MultiDropdown: React.FC<MultiDropdownProps> = ({
   );
 };
 
-export default MultiDropdown;
+export default Dropdown;
