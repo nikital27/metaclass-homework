@@ -2,8 +2,9 @@ import Button from 'components/Button';
 import Input from 'components/Input';
 import useSearch from 'utils/useSearch';
 import styles from './Search.module.scss';
+import { observer } from 'mobx-react-lite';
 
-const Search = () => {
+const Search = observer(() => {
     const {
         searchValue,
         setSearchValue,
@@ -22,6 +23,6 @@ const Search = () => {
             <Button onClick={handleSearch}>Find now</Button>
         </div>
     );
-};
+});
 
 export default Search;

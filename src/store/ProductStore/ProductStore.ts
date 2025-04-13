@@ -2,6 +2,7 @@ import { makeAutoObservable, reaction, runInAction } from 'mobx';
 import { fetchProducts } from 'config/api/products';
 import rootStore from 'store/RootStore';
 import IProducts from 'types/IProducts';
+import { Meta } from 'utils/meta';
 
 class ProductStore {
   products: IProducts[] = [];
@@ -9,8 +10,7 @@ class ProductStore {
     total: 0,
     page: 1
   };
-  isLoading = false;
-  error: string | null = null;
+  state:Meta = Meta.initial
 
   constructor() {
     makeAutoObservable(this);
@@ -30,8 +30,7 @@ class ProductStore {
   }
 
   async fetchProducts(page = 1, searchParams?: string, categoryParams?: string) {
-    this.isLoading = true;
-    this.error = null;
+    this.state = Meta.loading
 
     try {
       const response = await fetchProducts(page, 10, searchParams, categoryParams);
@@ -48,12 +47,11 @@ class ProductStore {
           page: page
         };
 
-        this.isLoading = false;
+        this.state = Meta.success
       });
     } catch (error) {
       runInAction(() => {
-        this.error = error instanceof Error ? error.message : 'Unknown error';
-        this.isLoading = false;
+        this.state = Meta.error;
       });
     }
   }

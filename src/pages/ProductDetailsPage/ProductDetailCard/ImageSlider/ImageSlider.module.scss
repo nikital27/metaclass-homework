@@ -1,0 +1,66 @@
+  .imageSlider {
+      width: 600px;
+      height: 600px;
+      position: relative;
+      flex-shrink: 0;
+
+      img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          flex-shrink: 0;
+      }
+
+      svg {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+
+      svg path {
+          stroke: #fff;
+      }
+
+      .sliderLeft {
+          width: 64px;
+          height: 64px;
+          background-color: #000;
+          outline: none;
+          border: none;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: absolute;
+          top: 50%;
+          right: 24px;
+          transform: translate(0, -50%);
+          transition: 0.2s;
+          cursor: pointer;
+
+          &:hover {
+              padding-left: 10px;
+          }
+      }
+
+      .sliderRight {
+          width: 64px;
+          height: 64px;
+          background-color: #000;
+          border-radius: 50%;
+          border: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: absolute;
+          top: 50%;
+          left: 24px;
+          transform: translate(0, -50%);
+          transition: 0.2s;
+          cursor: pointer;
+
+          &:hover {
+              padding-right: 10px;
+          }
+      }
+  }

@@ -1,6 +1,7 @@
 import { runInAction } from 'mobx';
 import { useEffect } from 'react';
 import productStore from 'store/ProductStore';
+import { Meta } from 'utils/meta';
 
 const useProducts = () => {
   useEffect(() => {
@@ -9,7 +10,7 @@ const useProducts = () => {
 
   const fetchMoreData = () => {
     runInAction(() => {
-      if (!productStore.isLoading && productStore.products.length < productStore.meta.total) {
+      if (productStore.state !== Meta.loading && productStore.products.length < productStore.meta.total) {
         productStore.fetchProducts(productStore.meta.page + 1);
       }
     });

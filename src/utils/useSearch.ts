@@ -4,7 +4,7 @@ import { useSearchParams } from 'react-router';
 const useSearch = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialSearchValue = searchParams.get('search') || '';
-  const [searchValue, setSearchValue] = useState(initialSearchValue);
+  const [searchValue, setSearchValue] = useState(initialSearchValue);98
 
   const updateSearchParams = useCallback(
     (value: string) => {

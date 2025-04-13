@@ -1,5 +1,5 @@
 import cn from 'classnames';
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import ArrowDownIcon from 'components/icons/ArrowDownIcon';
 import { useOnClickOutside } from 'utils/useOnClickOutside';
 import Input from '../Input';
@@ -19,6 +19,7 @@ export type DropdownProps = {
   onChange: (value: Option | null) => void;
   disabled?: boolean;
   getTitle?: (value: Option | null) => string;
+  clearable?: boolean;
 };
 
 const Dropdown: React.FC<DropdownProps> = ({
@@ -28,6 +29,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   onChange,
   disabled,
   getTitle = (val) => val?.value || '',
+  clearable = true,
   ...props
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,18 +38,21 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   useOnClickOutside(dropdownRef, () => setIsOpen(false));
 
-  const handleInputChange = (value: string) => { setFilter(value); };
+  const handleInputChange = (value: string) => {
+    setFilter(value);
+    if (!isOpen) setIsOpen(true);
+  };
 
-  const handleOptionClick = (option: Option) => {
-    if (option.key !== '0') {
-      onChange(option);
-      setIsOpen(false);
-      setFilter('');
-    } else {
-      onChange(null)
-      setIsOpen(false)
-    }
+  const handleOptionClick = useCallback((option: Option) => {
+    onChange(option);
+    setIsOpen(false);
+    setFilter('');
+  }, [onChange]);
 
+  const handleClear = () => {
+    onChange(null);
+    setIsOpen(false);
+    setFilter('');
   };
 
   const filteredOptions = options.filter((option) =>
@@ -65,7 +70,11 @@ const Dropdown: React.FC<DropdownProps> = ({
         placeholder={getTitle(null)}
         onChange={handleInputChange}
         className={styles.input}
-        afterSlot={<ArrowDownIcon />}
+        afterSlot={
+          <div className={styles.icons}>
+            <ArrowDownIcon />
+          </div>
+        }
         disabled={disabled}
       />
       {isOpen && !disabled && (

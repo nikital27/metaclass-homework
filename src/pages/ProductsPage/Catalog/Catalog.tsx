@@ -11,11 +11,13 @@ import productStore from 'store/ProductStore';
 import useProducts from 'utils/useProducts';
 import useScrollToTop from 'utils/useScrollToTop';
 import styles from './catalog.module.scss';
+import { Meta } from 'utils/meta';
+import cl from 'classnames'
 
 const Catalog = observer(() => {
   const { showScroll, handleClick } = useScrollToTop();
   const { fetchMoreData } = useProducts();
-  const { products, meta, isLoading } = productStore;
+  const { products, meta, state } = productStore;
 
   const renderProducts = () => {
     if (products.length === 0) {
@@ -46,8 +48,8 @@ const Catalog = observer(() => {
       <Text view="subtitle" weight="bold">
         Total products
       </Text>
-      {isLoading && <Loader size="s" className={styles.loading} />}
-      {!isLoading && meta.total && (
+      {state === Meta.loading && <Loader size="s" className={styles.loading} />}
+      {state !== Meta.loading && meta.total && (
         <Text view="p-20" color="accent" weight="bold">
           {meta.total}
         </Text>
@@ -71,7 +73,7 @@ const Catalog = observer(() => {
       </InfiniteScroll>
 
       <div
-        className={`${styles.scrollToTop} ${showScroll ? styles.visible : ''}`}
+        className={cl(styles.scrollToTop, { [styles.visible]: showScroll })}
         onClick={handleClick}
       >
         <ArrowDownIcon width={30} height={30} />

@@ -1,4 +1,5 @@
 
+import { observer } from 'mobx-react-lite';
 import Catalog from './Catalog';
 import Filter from './Filter';
 import ProductsCaption from './ProductsCaption';
